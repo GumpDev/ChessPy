@@ -1,0 +1,1 @@
+Projetinho de um xadrez feito em Python utilizando o Ursina
