@@ -1,18 +1,5 @@
 from ursina import *
-
-class SquareView(Entity):
-    def __init__(self, position, board):
-        super().__init__(
-            parent=board.board_parent,
-            origin=(-.5,.5),
-            color=color.white.tint(.5),
-            position=(position[0]+.5,-position[1]-.5),
-            model='quad',
-            texture='white_cube',
-            scale=(1, 1),
-            z = -.05
-        )
-
+from src.classes.Moviment import SquaresView
 class Piece(Draggable):
     def __init__(self, board, _color, type, position):
         super().__init__(
@@ -28,12 +15,39 @@ class Piece(Draggable):
         self.type = type
         self.piece_color = _color
         self.startPosition = (self.x,self.y)
+        self.direction_piece = 1 if self.y <= -6 else -1
+        self.view = SquaresView(
+            type="",
+            position=(position[0],-position[1]),
+            direction_piece=self.direction_piece,
+            board=board
+        )
+        
+        def hide():
+            if(self.view):
+                self.view.destroy()
+        
+        def show():
+            if(board.turn == self.piece_color): 
+                hide()
+                
+                self.view = SquaresView(
+                    type=type,
+                    position=(position[0],-position[1]),
+                    board=board,
+                    direction_piece=self.direction_piece
+                )
+            
+        self.on_click = show
         
         def drop():
-            if(board.turn == self.piece_color):                                            
-                self.x = round(self.x)                                            
+            if(board.turn == self.piece_color):   
+                self.x = round(self.x)
                 self.y = round(self.y)
-                self.startPosition = (self.x,self.y)
+                if not self.startPosition == (round(self.x), round(self.y)):
+                    self.startPosition = (self.x,self.y)
+                    board.turn = 'white' if self.piece_color == 'black' else 'black'
+                    hide()
             else:
                 self.x = self.startPosition[0]
                 self.y = self.startPosition[1] 

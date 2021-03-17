@@ -1,12 +1,8 @@
-- Turno
 - Movimentação das peças
-    L pawn
     L bishop
     L knight
     L rook
     L queen 
-    L king
-- Animação
 - Comer
 - Check 
 - Checkmate 
